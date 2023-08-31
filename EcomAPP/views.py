@@ -1,26 +1,25 @@
-from django.shortcuts import render
-from rest_framework import generics, permissions, status, viewsets
-from rest_framework.views import APIView
+import stripe
 from .models import *
 from .serializers import *
 from django.http import Http404
-from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render
+from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from rest_framework.response import Response
+from rest_framework.filters import SearchFilter
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view, permission_classes
+from djstripe.models import PaymentMethod, Customer
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
-import stripe
-from djstripe.models import PaymentMethod, Customer
+from django.contrib.auth import authenticate, login, logout
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter
+from rest_framework import generics, permissions, status, viewsets
+from rest_framework.decorators import api_view, permission_classes
 from .filters import ProductFilter, CompanytFilter, CategorytFilter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 
-
-# Category API using Class-Based Views
+# Category Code
 class CategoryShowAdd(APIView):
     def get(self, request, format=None):
         category = Category.objects.all()
@@ -64,11 +63,10 @@ class CategoryDeleteUpdateRetrieve(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# Product API using Generic Class View
+# Product Code,
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    # permission_classes = (permissions.IsAuthenticated,)
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['name']
 
@@ -79,7 +77,7 @@ class ProductRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
 
-# Company API
+# Company Code
 class CompanyListCreateAPIView(generics.ListCreateAPIView):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer

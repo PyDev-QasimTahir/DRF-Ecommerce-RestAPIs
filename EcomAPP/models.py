@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+# Company Mode
 class Company(models.Model):
     name = models.CharField(max_length=200)
 
@@ -9,6 +10,7 @@ class Company(models.Model):
         return self.name
 
 
+# Category Model
 class Category(models.Model):
     name = models.CharField(max_length=200)
 
@@ -16,6 +18,7 @@ class Category(models.Model):
         return self.name
 
 
+# Product Model
 class Product(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -28,6 +31,7 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
 
 
 class AddCart(models.Model):
