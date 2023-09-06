@@ -36,8 +36,6 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # 'DEFAULT_AUTHENTICATION_CLASSES': (
-        #         'rest_framework.authentication.TokenAuthentication',
     ),
 }
 SIMPLE_JWT = {
@@ -45,11 +43,27 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(minutes=20),
 }
 
-STRIPE_TEST_SECRET_KEY = "sk_test_51NexFaIROWzGb5xErnOpFhwQ68EUtMtqwZZ9foaV1pGQCAGJXdZB4C74f5oFzQJ5QHsV3HLMJMhKjIkkuKIN5YIw002BY3CIgr"
-STRIPE_PUBLIC_KEY = "pk_test_51NexFaIROWzGb5xE36Im1pGJbArvYo3Hu5lcNSrszSoxJgYvt0tdnWaTRlJyx4TLQMPCTVHayaBHFvSgV1Azc0uz00PTaPOyDt"
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 2,
+
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '5/day',
+        'user': '10/day'
+    }
+}
+
+
+STRIPE_TEST_SECRET_KEY = "Your-Secret-Key"
+STRIPE_PUBLIC_KEY = "Your-Secret-Key"
 DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
-DJSTRIPE_WEBHOOK_SECRET = "whsec_603bc75ede175b3419253e09d48117e56755e192cf698f3d42da10d29a224aee"
-DJSTRIPE_SECRET_KEY = "sk_test_51NexFaIROWzGb5xErnOpFhwQ68EUtMtqwZZ9foaV1pGQCAGJXdZB4C74f5oFzQJ5QHsV3HLMJMhKjIkkuKIN5YIw002BY3CIgr"
+DJSTRIPE_WEBHOOK_SECRET = "Your-Secret-Key"
+DJSTRIPE_SECRET_KEY = "Your-Secret-Key"
 STRIPE_LIVE_MODE = False
 
 

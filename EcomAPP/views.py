@@ -12,12 +12,13 @@ from djstripe.models import PaymentMethod, Customer
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate, login, logout
+from rest_framework.pagination import LimitOffsetPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.decorators import api_view, permission_classes
 from .filters import ProductFilter, CompanytFilter, CategorytFilter
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
-
 
 # Category Code
 class CategoryShowAdd(APIView):
@@ -28,6 +29,7 @@ class CategoryShowAdd(APIView):
         filter_backends = [DjangoFilterBackend, SearchFilter]
         filterset_class = CategoryFilter
         search_fields = ['name']
+        throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
     def post(self, request, format=None):
         serializer = CategorySerializer(data=request.data)
@@ -47,6 +49,7 @@ class CategoryDeleteUpdateRetrieve(APIView):
     def get(self, request, pk, format=None):
         category = self.get_object(pk)
         serializer = CategorySerializer(category)
+        throttle_classes = [AnonRateThrottle, UserRateThrottle]
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
@@ -69,6 +72,8 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['name']
+    pagination_class = LimitOffsetPagination
+
 
 
 class ProductRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
@@ -84,10 +89,12 @@ class CompanyListCreateAPIView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = CompanytFilter
     search_fields = ['name']
+    throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
 class CompanyRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
+    throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
 
 # Sign-up API
