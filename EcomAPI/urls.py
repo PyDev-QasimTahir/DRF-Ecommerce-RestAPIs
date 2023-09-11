@@ -1,9 +1,10 @@
-from django.contrib import admin
-from django.urls import path
 from EcomAPP import views
 from EcomAPP.views import *
-from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
+from django.contrib import admin
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+# from dj_rest_auth.views.registration import RegisterView
+from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
 
 router = DefaultRouter()
 router.register(r"Product", ProductListCreateAPIView)
@@ -12,6 +13,12 @@ router.register(r"ShipInfo", ShipInfoListCreateAPIView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Social Login
+    path('accounts/', include('allauth.urls')),
+    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    path('dj-rest-auth/facebook/', FacebookLogin.as_view(), name='fb_login'),
+    path('dj-rest-auth/github/', GithubLogin.as_view(), name='github_login'),
+    # path('dj-rest-auth/registration/', RegisterView.as_view(), name='rest_register'),
     # Signup, Login, Logout APIs
     path('signup/', UserSignupView.as_view(), name='user-signup'),
     path('login/', TokenObtainPairView.as_view(), name='token-obtain-pair'),
@@ -33,4 +40,4 @@ urlpatterns = [
     path('shipinfo/<int:pk>/', views.ShipInfoRetrieveUpdateDeleteView.as_view()),
     # Payment Method:
     path('payment/', CreatePaymentMethodView.as_view(), name='create-payment'),
-]
+    ]

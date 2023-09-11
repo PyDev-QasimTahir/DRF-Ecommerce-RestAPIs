@@ -19,6 +19,10 @@ from rest_framework.decorators import api_view, permission_classes
 from .filters import ProductFilter, CompanytFilter, CategorytFilter
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from dj_rest_auth.registration.views import SocialLoginView
 
 # Category Code
 class CategoryShowAdd(APIView):
@@ -73,7 +77,6 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['name']
     pagination_class = LimitOffsetPagination
-
 
 
 class ProductRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
@@ -175,3 +178,11 @@ class CreatePaymentMethodView(generics.CreateAPIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+# Social Login Auth
+class FacebookLogin(SocialLoginView):
+    adapter_class = FacebookOAuth2Adapter
+class GithubLogin(SocialLoginView):
+    adapter_class = GitHubOAuth2Adapter
+    callback_url = "http://127.0.0.1:8000/accounts/github/login/callback/"
+    client_class = OAuth2Client
